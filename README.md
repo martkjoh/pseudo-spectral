@@ -1,2 +1,2 @@
 # pseudo-spectral
-Pseudo-spectral solver for diffusion PDE's
+Pseudo-spectral solver for diffusion PDEs.
