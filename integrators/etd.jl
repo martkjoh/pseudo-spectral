@@ -55,8 +55,8 @@ function etd!(par, g, Fφ, φ)
     Fφ1, Fφ2 = Fφ
     φ1, φ2 = φ 
     g1, g2 = g(φ1, φ2)
-    Fφ1 .= par.k1 .* Fφ1 + par.k2 .* g1
-    Fφ2 .= par.k1 .* Fφ2 + par.k2 .* g2
+    Fφ1 .= par.f1 .* Fφ1 + par.f2 .* g1
+    Fφ2 .= par.f1 .* Fφ2 + par.f2 .* g2
     antialias!(Fφ1)
     antialias!(Fφ2)
     φ1 .= par.B*Fφ1
