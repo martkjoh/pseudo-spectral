@@ -94,18 +94,18 @@ function etd!(par, tools, Fφ, φ)
     AA!(Fφ1)
     AA!(Fφ2)
     
-    ξ1 = rand(N, N) .* D
-    ξ2 = rand(N, N) .* D
-    kξ1 = k² .* (F * ξ1)
-    kξ2 = k² .* (F * ξ2)
-    Fφ1 .+= kξ1
-    Fφ2 .+= kξ2
+    # ξ1 = rand(N, N) .* D
+    # ξ2 = rand(N, N) .* D
+    # kξ1 = k² .* (F * ξ1)
+    # kξ2 = k² .* (F * ξ2)
+    # Fφ1 .+= kξ1
+    # Fφ2 .+= kξ2
 
     φ1 .= B*Fφ1
     φ2 .= B*Fφ2
 end
 
-function init(par, tools; A=1e-1, Δ=2., n=1.)
+function init_cos(par, tools; A=1e-1, Δ=2., n=1.)
     x1, x2 = tools.x
     N, dk = par.N, par.dk
     δ1 = @. A * cos(dk*n*x1) * cos(dk*n*x2)
@@ -114,10 +114,27 @@ function init(par, tools; A=1e-1, Δ=2., n=1.)
     v = par.v
     φ1 = v * ones(N, N) + δ1
     φ2 = zeros(N, N) + δ2
+
     return φ1, φ2
 end
 
-function run(par, tools, M, frames)
+
+function init_random(par, tools;)
+    v, N = par.v, par.N
+    φ1 = randn(N, N)
+    φ2 = randn(N, N)
+
+    av1 = sum(φ1) / N^2
+    av2 = sum(φ2) / N^2
+
+    @. φ1 += (v - av1)
+    @. φ2 += -av2
+
+    return φ1, φ2
+end
+
+
+function run(par, tools, M, frames; init=init_random)
     N = par.N
     φ1, φ2 = init(par, tools)
     F, B = tools.plan;

@@ -7,10 +7,9 @@ dt = 2e-2
 α = .5
 v = .5
 D = 0
+M = Int(4e5)
 
-
-M = Int(2e4)
-frames = 50;
+frames = 500;
 
 par = Par(N, L, dt, α, v, D)
 φt = simulate(par, M, frames);
