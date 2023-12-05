@@ -7,10 +7,10 @@ dt = 2e-2
 D = 1e-5
 
 
-M = Int(1e3)
+M = Int(1e6)
 frames = 500;
 
-αs = [.2, .3, .4, .6]
+αs = [.2, .3, .4]
 vs = [0., .6, .8]
 n = size(αs)[1]*size(vs)[1]
 av = [(α, v) for α in αs for v in vs];
@@ -22,11 +22,6 @@ result = fill((φt0, par0), n);
 
 for (i, α, v) in av
     par = Par(N, L, dt, α, v, D)
-    @time φt = simulate(par, M, frames);
-    result[i] = (φt, par)
-end;
-
-
-for (φt, par) in result
+    φt = simulate(par, M, frames;init=init_wave);
     animate_hm(φt, par);
-end  
+end;

@@ -94,12 +94,12 @@ function etd!(par, tools, Fφ, φ)
     AA!(Fφ1)
     AA!(Fφ2)
     
-    # ξ1 = rand(N, N) .* D
-    # ξ2 = rand(N, N) .* D
-    # kξ1 = k² .* (F * ξ1)
-    # kξ2 = k² .* (F * ξ2)
-    # Fφ1 .+= kξ1
-    # Fφ2 .+= kξ2
+    ξ1 = rand(N, N) .* D
+    ξ2 = rand(N, N) .* D
+    kξ1 = k² .* (F * ξ1)
+    kξ2 = k² .* (F * ξ2)
+    Fφ1 .+= kξ1
+    Fφ2 .+= kξ2
 
     φ1 .= B*Fφ1
     φ2 .= B*Fφ2
@@ -117,6 +117,21 @@ function init_cos(par, tools; A=1e-1, Δ=2., n=1.)
 
     return φ1, φ2
 end
+
+
+function init_wave(par, tools; A=1, n=2.)
+    x1, x2 = tools.x
+    N, dk = par.N, par.dk
+    δ1 = @. A * cos(dk*n*x1) * ones(N)'
+    δ2 = @. A * sin(dk*n*x1) * ones(N)'
+
+    v = par.v
+    φ1 = v * ones(N, N) + δ1
+    φ2 = zeros(N, N) + δ2
+
+    return φ1, φ2
+end
+
 
 
 function init_random(par, tools;)
@@ -156,9 +171,9 @@ function run(par, tools, M, frames; init=init_random)
     return φt
 end
 
-function simulate(par, M, frames)
+function simulate(par, M, frames;init=init_random)
     tools = Tools(par);
-    φt = run(par, tools, M, frames)
+    φt = run(par, tools, M, frames;init=init)
     return φt
 end;
 
@@ -180,7 +195,7 @@ end
 
 function animate_hm(φt, par; skip=1)
     v,α = par.v, par.α
-    name = "vid/NRCH_HM_α=$(α)_v=$(v)"
+    name = "vid/wave/NRCH_HM_α=$(α)_v=$(v)"
     frames = size(φt)[1]
     p = Progress(frames, 1, "Animating :") 
     anim = @animate for i in 1:frames
