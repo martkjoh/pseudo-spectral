@@ -130,11 +130,11 @@ end
 
 function shape(par)
     N = par.N
-    b1 = (N ÷ 40)
-    b2 = 3 * b1
+    b1 = (N ÷ 20)
+    b2 = 3 * b1 
 
     n1 = 4 * b1
-    n2 = 10 * b1
+    n2 = 9 * b1
     return b1, b2, n1, n2
 end
 
@@ -208,7 +208,7 @@ function plot_wall(φt, par, tools, M)
             x2 = (crossind - 1) * dx
             y1 = φ1[i, crossind]
             y2 = φ1[i, crossind-1]
-            x = x2 - (x1 - x2)/(y1 - y2) * y2
+            x = x1 - (x1 - x2)/(y1 - y2) * y2
 
             walls[k, i] = x
         end 
@@ -221,8 +221,10 @@ function plot_wall(φt, par, tools, M)
     S1 = n1 * dx
     S2 = n2 * dx
 
-    v1 = α / S1 * L / (L - S1)
-    v2 = α / S2 * L / (L - S2)
+    G1 = S1 * (L - S1) / L / 2 # / D
+    G2 = S2 * (L - S2) / L / 2 # / D
+    v1 = α / (2 * G1)
+    v2 = α / (2 * G2)
     print(v1, '\n')
     print(v2)
 
@@ -244,11 +246,14 @@ function plot_wall(φt, par, tools, M)
     display(p1)
 
     p2 = plot()
-    plot!(T[1:end-1], (walls[1,2:end] - walls[1,1:end-1]) / dt)
-    plot!(T[1:end-1], (walls[2,2:end] - walls[2,1:end-1]) / dt)
+    vf = (walls[1,2:end] - walls[1,1:end-1]) / dt
+    vg = (walls[2,2:end] - walls[2,1:end-1]) / dt
+    vmax = maximum([vf; vg])
+    plot!(T[1:end-1], vf)
+    plot!(T[1:end-1], vg)
     plot!(T, v1*ones(frames))
     plot!(T, v2*ones(frames))
-    plot!(size=(1000, 500))
+    plot!(size=(1000, 500), yrange=(0, vmax))
 
     display(p2)
 

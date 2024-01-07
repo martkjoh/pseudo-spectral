@@ -1,18 +1,20 @@
 include("../../integrators/etd2D.jl");
 
 
-N = 256
+N = 16
 L = N
-dt = 2e-1
-α = .18
+dt = 1e-2
+α = 0
 v = 0.
-D = 1e-1
+D = 0
 
 
-M = Int(5e4)
+M = Int(1e1)
 frames = 10;
 
 par = Par(N, L, dt, α, v, D)
 φt = simulate(par, M, frames;init=init_wave);
 animate_hm(φt, par);
 
+# tools = Tools(par);
+# tools.f[1]
